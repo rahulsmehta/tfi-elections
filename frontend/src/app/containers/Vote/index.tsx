@@ -114,7 +114,7 @@ export class Vote extends React.Component<Vote.Props, Vote.State> {
           })
         };
 
-    const submitButton = isSelected ? <Button intent={Intent.SUCCESS} text={"Cast Vote"} icon="envelope"
+    const submitButton = isSelected ? <Button intent={Intent.PRIMARY} text={"Submit Vote"} icon="tick"
       onClick={() => {
         if(confirm(`Do you want to cast your vote for ${candidate.name}?`)) {
           alert("Voted for " + candidate.name);

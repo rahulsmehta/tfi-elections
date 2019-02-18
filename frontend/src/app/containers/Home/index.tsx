@@ -97,11 +97,11 @@ export class Home extends React.Component<Home.Props> {
 
   private mapStateToIntent = (state: Election.ElectionState) => {
     if (state == Election.ElectionState.ACTIVE) {
-      return Intent.SUCCESS;
+      return Intent.PRIMARY;
     } else if (state == Election.ElectionState.CLOSED) {
       return Intent.WARNING;
     } else {
-      return Intent.DANGER;
+      return Intent.SUCCESS;
     }
   }
 
@@ -181,7 +181,7 @@ export class Home extends React.Component<Home.Props> {
           title={"Administer Elections"}
           isOpen={this.state.isAdminOpen}
         >
-          <Admin />
+          <Admin {...this.props} />
         </Drawer>
       </div>
     );

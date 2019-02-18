@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as style from './style.css';
 // import { connect } from 'react-redux';
 import { 
-  Button, H3, Collapse, Intent
+  Button, Collapse, Intent
 } from "@blueprintjs/core";
 import { RouteComponentProps } from 'react-router';
 // import { RootState } from 'app/reducers';
