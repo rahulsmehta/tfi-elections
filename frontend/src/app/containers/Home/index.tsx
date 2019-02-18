@@ -16,11 +16,13 @@ import {
   Card,
   Elevation,
   Tag,
-  Intent
+  Intent,
+  Drawer
 } from "@blueprintjs/core";
 import { RouteComponentProps } from 'react-router';
 import { RootState } from 'app/reducers';
 import { Election } from 'app/models';
+import { Admin } from '../Admin';
 
 export namespace Home {
   export interface Props extends RouteComponentProps<void> {
@@ -32,6 +34,7 @@ export namespace Home {
   export interface State {
     isAdmin: boolean | undefined;
     username: string | undefined;
+    isAdminOpen: boolean;
   }
 }
 
@@ -56,6 +59,7 @@ export class Home extends React.Component<Home.Props> {
   public state: Home.State = {
     isAdmin: undefined,
     username: undefined,
+    isAdminOpen: false
   }
 
   constructor(props: Home.Props, context?: any) {
@@ -125,10 +129,13 @@ export class Home extends React.Component<Home.Props> {
     return elections.filter(e => e.state == state).map(this.renderCard);
   }
 
+  private handleOpen = () => this.setState({ isAdminOpen: true });
+  private handleClose = () => this.setState({ isAdminOpen: false });
+
   render() {
     const routeParams = (this.props.match.params as unknown) as IRouteParams;
     const adminButton = this.state.isAdmin ? (
-            <Button className="bp3-minimal" icon="dashboard" text="Admin" /> 
+            <Button className="bp3-minimal" icon="dashboard" text="Admin" onClick={this.handleOpen} /> 
         ) : undefined;
 
         const BREADCRUMBS: IBreadcrumbProps[] = [
@@ -168,6 +175,14 @@ export class Home extends React.Component<Home.Props> {
         <div className={style.container} >
           {this.renderCards(Election.ElectionState.COMPLETED)}
         </div>
+        <Drawer
+          icon="dashboard"
+          onClose={this.handleClose}
+          title={"Administer Elections"}
+          isOpen={this.state.isAdminOpen}
+        >
+          <Admin />
+        </Drawer>
       </div>
     );
   }

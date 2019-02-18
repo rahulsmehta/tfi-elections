@@ -1,0 +1,30 @@
+@import url("https://unpkg.com/@blueprintjs/core@^3.13.0/lib/css/blueprint.css");
+
+.bp3-navbar {
+    background: green;
+}
+
+.icon {
+    width: 36px;
+    height: 36px;
+    margin-right: 10px;
+}
+
+.appContainer {
+    /* background-color: #F5F8FA; */
+    height: 100%;
+    overflow: scroll;
+}
+
+.enrollContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0 10px 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 25px;
+}
