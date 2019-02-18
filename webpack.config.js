@@ -20,7 +20,8 @@ module.exports = {
   output: {
     path: outPath,
     filename: isProduction ? '[contenthash].js' : '[hash].js',
-    chunkFilename: isProduction ? '[name].[contenthash].js' : '[name].[hash].js'
+    chunkFilename: isProduction ? '[name].[contenthash].js' : '[name].[hash].js',
+    publicPath: '/'
   },
   target: 'web',
   resolve: {
@@ -127,7 +128,7 @@ module.exports = {
         collapseInlineTagWhitespace: true
       },
       append: {
-        head: `<script src="//cdn.polyfill.io/v3/polyfill.min.js"></script>`
+        // head: `<script src="//cdn.polyfill.io/v3/polyfill.min.js"></script>`
       },
       meta: {
         title: package.name,
