@@ -11,11 +11,11 @@ const candidates: Candidate[] = [
   },
   {
     id: "001",
-    name: "Dan Sullivan"
+    name: "PJ Greenbaum"
   },
   {
     id: "002",
-    name: "Dirty Martini"
+    name: "Maggie McCallister"
   },
 ]
 

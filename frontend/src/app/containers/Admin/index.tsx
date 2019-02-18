@@ -56,8 +56,8 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
       return (
           <div className={style.enrollContainer}>
               <textarea style={{ width: "300px", height: "300px" }} />
-              <Button intent={Intent.SUCCESS} icon="plus" text="Add Voters" />
-              <Button intent={Intent.SUCCESS} icon="circle-arrow-right" text="Send Links" />
+              <Button intent={Intent.SUCCESS} minimal={true} icon="plus" text="Add Voters" />
+              <Button intent={Intent.SUCCESS} minimal={true} icon="circle-arrow-right" text="Send Links" />
           </div>
       )
   }
