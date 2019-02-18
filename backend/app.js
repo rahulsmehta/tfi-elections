@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var cors = require("cors");
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -14,13 +15,21 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(logger('dev'));
+if (process.env.NODE_ENV != 'production') {
+  app.use(cors());
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
+app.use('/api/users', usersRouter);
+
+app.use(express.static(__dirname +'./../frontend/build')); //serves the other static files
+app.get('*', (req,res) =>{
+  res.sendFile(path.join(__dirname+'./../frontend/build/index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

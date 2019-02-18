@@ -161,6 +161,14 @@ cookie@0.3.1:
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/cookie/-/cookie-0.3.1.tgz#e7e0a1f9ef43b4c8ba925c5c5a96e806d16873bb"
   integrity sha1-5+Ch+e9DtMi6klxcWpboBtFoc7s=
 
+cors@^2.8.5:
+  version "2.8.5"
+  resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/cors/-/cors-2.8.5.tgz#eac11da51592dd86b9f06f6e7ac293b3df875d29"
+  integrity sha1-6sEdpRWS3Ya58G9uesKTs9+HXSk=
+  dependencies:
+    object-assign "^4"
+    vary "^1"
+
 css-parse@1.0.4:
   version "1.0.4"
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/css-parse/-/css-parse-1.0.4.tgz#38b0503fbf9da9f54e9c1dbda60e145c77117bdd"
@@ -433,6 +441,11 @@ negotiator@0.6.1:
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   integrity sha1-KzJxhOiZIQEXeyhWP7XnECrNDKk=
 
+object-assign@^4:
+  version "4.1.1"
+  resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
+  integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
+
 on-finished@~2.3.0:
   version "2.3.0"
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/on-finished/-/on-finished-2.3.0.tgz#20f1336481b083cd75337992a16971aa2d906947"
@@ -639,7 +652,7 @@ utils-merge@1.0.1:
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-vary@~1.1.2:
+vary@^1, vary@~1.1.2:
   version "1.1.2"
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=

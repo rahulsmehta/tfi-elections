@@ -28,10 +28,20 @@ export namespace Home {
     user: string;
     // actions: TodoActions;
   }
+
+  export interface State {
+    isAdmin: boolean | undefined;
+    username: string | undefined;
+  }
 }
 
 export interface IRouteParams {
   userToken: string;
+}
+
+export interface IAdminResponse {
+  isAdmin: boolean;
+  username: string;
 }
 
 @connect(
@@ -43,17 +53,29 @@ export class Home extends React.Component<Home.Props> {
   static defaultProps: Partial<Home.Props> = {
   };
 
+  public state: Home.State = {
+    isAdmin: undefined,
+    username: undefined,
+  }
+
   constructor(props: Home.Props, context?: any) {
     super(props, context);
-    // this.handleClearCompleted = this.handleClearCompleted.bind(this);
-    // this.handleFilterChange = this.handleFilterChange.bind(this);
   }
 
   public componentDidMount() {
       console.warn("Home component mounted");
       const routeParams = (this.props.match.params as unknown) as IRouteParams;
       console.log(routeParams)
+      this.isAdmin();
+  }
 
+  public async isAdmin() {
+      const routeParams = (this.props.match.params as unknown) as IRouteParams;
+      const resp = await fetch(`http://localhost:3001/api/users/${routeParams.userToken}`).then((response) => response.json()) as IAdminResponse;
+      this.setState({
+        isAdmin: resp.isAdmin,
+        username: resp.username
+      });
   }
 
 
@@ -79,16 +101,6 @@ export class Home extends React.Component<Home.Props> {
     }
   }
 
-  private mapStateToPriority = (state: Election.ElectionState) => {
-    if (state == Election.ElectionState.ACTIVE) {
-      return 2;
-    } else if (state == Election.ElectionState.CLOSED) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
   private renderCard = (election: Election) => {
     const routeParams = (this.props.match.params as unknown) as IRouteParams;
     return (
@@ -97,7 +109,7 @@ export class Home extends React.Component<Home.Props> {
         elevation={Elevation.TWO}
         className={style.card}
         onClick={() => {
-          window.location.href = `${routeParams.userToken}/election/${election.id}`
+          window.location.href = `${routeParams.userToken.replace('//','/')}/election/${election.id}`
         }}
         key={election.id}
       >
@@ -110,18 +122,12 @@ export class Home extends React.Component<Home.Props> {
 
   private renderCards = (state: Election.ElectionState) => {
     const elections = this.props.elections;
-    // const sorted = elections.sort((a,b) => {
-    //   const an = this.mapStateToPriority(a.state);
-    //   const bn = this.mapStateToPriority(b.state);
-    //   return bn - an;
-    // });
-    // return sorted.map(this.renderCard);
     return elections.filter(e => e.state == state).map(this.renderCard);
   }
 
   render() {
     const routeParams = (this.props.match.params as unknown) as IRouteParams;
-    const adminButton = true ? (
+    const adminButton = this.state.isAdmin ? (
             <Button className="bp3-minimal" icon="dashboard" text="Admin" /> 
         ) : undefined;
 
@@ -148,7 +154,7 @@ export class Home extends React.Component<Home.Props> {
           </Navbar.Group>
           <Navbar.Group align={Alignment.RIGHT}>
             {adminButton}
-            <Tooltip position={Position.BOTTOM_LEFT} content={"Signed in as " +this.props.user}>
+            <Tooltip position={Position.BOTTOM_LEFT} content={"Signed in as " +this.state.username}>
               <Button className="bp3-minimal" icon="person" />
             </Tooltip>
           </Navbar.Group>
