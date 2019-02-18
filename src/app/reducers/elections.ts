@@ -1,29 +1,44 @@
 import { handleActions } from 'redux-actions';
 import { RootState } from './state';
-import { Election } from "../models";
+import { Election, Candidate } from "../models";
 // import { TodoActions } from 'app/actions/todos';
 // import { TodoModel } from 'app/models';
+
+const candidates: Candidate[] = [
+  {
+    id: "000",
+    name: "Rahul Mehta"
+  },
+  {
+    id: "001",
+    name: "Dan Sullivan"
+  },
+  {
+    id: "002",
+    name: "Dirty Martini"
+  },
+]
 
 const initialState: RootState.ElectionState = [
   {
     id: "000-000-000",
-    state: Election.ElectionState.ACTIVE,
+    state: Election.ElectionState.COMPLETED,
     position: "President",
     icon: "globe",
-    startingCandidates: [],
-    currentCandidates: []
+    startingCandidates: candidates,
+    currentCandidates: candidates 
   },
   {
     id: "000-000-001",
-    state: Election.ElectionState.CLOSED,
+    state: Election.ElectionState.ACTIVE,
     position: "Vice President",
     icon: "globe-network",
-    startingCandidates: [],
-    currentCandidates: []
+    startingCandidates: candidates,
+    currentCandidates: candidates 
   },
   {
     id: "000-000-002",
-    state: Election.ElectionState.COMPLETED,
+    state: Election.ElectionState.CLOSED,
     position: "Treasurer",
     icon: "dollar",
     startingCandidates: [],

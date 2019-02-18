@@ -18,13 +18,9 @@ import {
   Tag,
   Intent
 } from "@blueprintjs/core";
-// import { bindActionCreators, Dispatch } from 'redux';
 import { RouteComponentProps } from 'react-router';
-// import { TodoActions } from 'app/actions';
 import { RootState } from 'app/reducers';
 import { Election } from 'app/models';
-// import { TodoModel } from 'app/models';
-// import { omit } from 'app/utils';
 
 export namespace Home {
   export interface Props extends RouteComponentProps<void> {
@@ -32,6 +28,10 @@ export namespace Home {
     user: string;
     // actions: TodoActions;
   }
+}
+
+export interface IRouteParams {
+  userToken: string;
 }
 
 @connect(
@@ -51,31 +51,22 @@ export class Home extends React.Component<Home.Props> {
 
   public componentDidMount() {
       console.warn("Home component mounted");
-      // console.log(this.props.elections);
-      // console.log(this.props.user);
-
-      console.log(this.props.match);
+      const routeParams = (this.props.match.params as unknown) as IRouteParams;
+      console.log(routeParams)
 
   }
 
-//   handleClearCompleted(): void {
-//     const hasCompletedTodo = this.props.todos.some((todo) => todo.completed || false);
-//     if (hasCompletedTodo) {
-//       this.props.actions.clearCompleted();
-//     }
-//   }
-
-//   handleFilterChange(filter: TodoModel.Filter): void {
-//     this.props.history.push(`#${filter}`);
-//   }
 
   private renderCurrentBreadcrumb = ({ text, ...restProps }: IBreadcrumbProps) => {
     return <Breadcrumb><Icon icon={restProps.icon} /> {text}</Breadcrumb>;
   }
 
   private renderBreadcrumb = ({ text, ...restProps }: IBreadcrumbProps) => {
-    // return <Breadcrumb><Icon icon={restProps.icon} /> {text}</Breadcrumb>;
-    return <Breadcrumb><Button icon={restProps.icon} className={Classes.MINIMAL} text={text}/></Breadcrumb>;
+    return <Breadcrumb><Button icon={restProps.icon} className={Classes.MINIMAL} text={text} onClick={() => {
+      if (restProps.href) {
+        window.location.href = restProps.href;
+      }
+    }}/></Breadcrumb>;
   }
 
   private mapStateToIntent = (state: Election.ElectionState) => {
@@ -98,13 +89,18 @@ export class Home extends React.Component<Home.Props> {
     }
   }
 
-  // private onCardSelect = () => {
-
-  // }
-
   private renderCard = (election: Election) => {
+    const routeParams = (this.props.match.params as unknown) as IRouteParams;
     return (
-      <Card interactive={true} elevation={Elevation.TWO} className={style.card} key={election.id} >
+      <Card
+        interactive={true}
+        elevation={Elevation.TWO}
+        className={style.card}
+        onClick={() => {
+          window.location.href = `${routeParams.userToken}/election/${election.id}`
+        }}
+        key={election.id}
+      >
         <H3>{election.position}</H3>
         <Icon icon={election.icon} iconSize={40} />
         <Tag intent={this.mapStateToIntent(election.state)} className={style.status} > {election.state.toLocaleUpperCase()} </Tag>
@@ -112,29 +108,25 @@ export class Home extends React.Component<Home.Props> {
     );
   }
 
-  private renderCards = () => {
+  private renderCards = (state: Election.ElectionState) => {
     const elections = this.props.elections;
-    const sorted = elections.sort((a,b) => {
-      const an = this.mapStateToPriority(a.state);
-      const bn = this.mapStateToPriority(b.state);
-      return bn - an;
-    });
-    return sorted.map(this.renderCard);
+    // const sorted = elections.sort((a,b) => {
+    //   const an = this.mapStateToPriority(a.state);
+    //   const bn = this.mapStateToPriority(b.state);
+    //   return bn - an;
+    // });
+    // return sorted.map(this.renderCard);
+    return elections.filter(e => e.state == state).map(this.renderCard);
   }
 
   render() {
-    // const { todos, actions, filter } = this.props;
-    // const activeCount = todos.length - todos.filter((todo) => todo.completed).length;
-    // const filteredTodos = filter ? todos.filter(FILTER_FUNCTIONS[filter]) : todos;
-    // const completedCount = todos.reduce((count, todo) => (todo.completed ? count + 1 : count), 0);
-
+    const routeParams = (this.props.match.params as unknown) as IRouteParams;
     const adminButton = true ? (
             <Button className="bp3-minimal" icon="dashboard" text="Admin" /> 
         ) : undefined;
 
         const BREADCRUMBS: IBreadcrumbProps[] = [
-          { href: "/", icon: "layers", text: "All Elections" },
-          // { href: "/uuid-1", icon: "person", text: "President" },
+          { href: `/${routeParams.userToken}`, icon: "layers", text: "All Elections" },
       ];
 
     const breadcrumbs = (
@@ -162,7 +154,13 @@ export class Home extends React.Component<Home.Props> {
           </Navbar.Group>
         </Navbar>
         <div className={style.container} >
-          {this.renderCards()}
+          {this.renderCards(Election.ElectionState.ACTIVE)}
+        </div>
+        <div className={style.container} >
+          {this.renderCards(Election.ElectionState.CLOSED)}
+        </div>
+        <div className={style.container} >
+          {this.renderCards(Election.ElectionState.COMPLETED)}
         </div>
       </div>
     );
