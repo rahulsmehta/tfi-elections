@@ -23,9 +23,6 @@ console.log(process.env.SENDGRID_API_KEY);
 // };
 // sgMail.send(msg).catch((msg) => console.error(msg));
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 if (process.env.NODE_ENV != 'production') {
@@ -34,7 +31,6 @@ if (process.env.NODE_ENV != 'production') {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/api/users', usersRouter);
