@@ -10,8 +10,8 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
-console.log(process.env.SENDGRID_API_KEY);
 
+// console.log(process.env.SENDGRID_API_KEY);
 // const sgMail = require('@sendgrid/mail');
 // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 // const msg = {
@@ -51,9 +51,8 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send('error');
 });
 
 module.exports = app;
