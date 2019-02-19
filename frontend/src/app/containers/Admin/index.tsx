@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as style from './style.css';
 // import { connect } from 'react-redux';
 import { 
-  Button, Collapse, Intent
+  Button, Collapse, Intent, FormGroup, InputGroup, TextArea
 } from "@blueprintjs/core";
 import { RouteComponentProps } from 'react-router';
 // import { RootState } from 'app/reducers';
@@ -55,11 +55,32 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
   public renderEnrollForm = () => {
       return (
           <div className={style.enrollContainer}>
-              <textarea style={{ width: "300px", height: "300px" }} />
-              <Button intent={Intent.SUCCESS} minimal={true} icon="plus" text="Add Voters" />
-              <Button intent={Intent.SUCCESS} minimal={true} icon="circle-arrow-right" text="Send Links" />
+              <textarea style={{ width: "100%", height: "300px" }} />
+              <Button intent={Intent.PRIMARY} minimal={true} icon="plus" text="Add Voters" />
+              <Button intent={Intent.PRIMARY} minimal={true} icon="circle-arrow-right" text="Send Links" />
           </div>
       )
+  }
+
+  public renderNewElectionForm = () => {
+    return (
+        <div className={style.enrollContainer}>
+            <FormGroup label={"Position"} >
+                <InputGroup id="new-election-position" placeholder={"President"} />
+            </FormGroup>
+            <FormGroup label={"Icon"} >
+                <InputGroup id="new-election-icon" placeholder={"globe-network"} />
+            </FormGroup>
+            <FormGroup label={"Candidates"}>
+                <TextArea
+                    intent={Intent.PRIMARY}
+                    style={{ width: "100%", height: "150px" }}
+                    placeholder={"Enter one candidate per line"}
+                />
+            </FormGroup>
+            <Button intent={Intent.PRIMARY} minimal={true} icon="add" text="Add Election" />
+        </div>
+    );
   }
 
   render() {
@@ -85,9 +106,7 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
                 large={true}
                />
               <Collapse isOpen={this.state.isNewOpen}>
-                    <pre>
-                        Dummy text.
-                    </pre>
+                    {this.renderNewElectionForm()}
                 </Collapse>
               <Button
                 text="Administer Election"
