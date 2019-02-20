@@ -22,7 +22,7 @@ import { RouteComponentProps } from 'react-router';
 // import { RootState } from 'app/reducers';
 import { Election } from 'app/models';
 import { Admin } from '../Admin';
-import { TI_LOGO } from "app/utils";
+import { TI_LOGO, API_BASE } from "app/utils";
 
 export namespace Home {
   export interface Props extends RouteComponentProps<void> {
@@ -68,14 +68,14 @@ export class Home extends React.Component<Home.Props, Home.State> {
   }
 
   private async loadElections() {
-    const resp = await fetch(`http://localhost:3001/api/election/all`).then((value) => value.json()) as string[];
+    const resp = await fetch(`${API_BASE}/election/all`).then((value) => value.json()) as string[];
     const elections: Election[] = resp.map(r => JSON.parse(r));
     this.setState({ elections })
   }
 
   private async isAdmin() {
       const routeParams = (this.props.match.params as unknown) as IRouteParams;
-      const resp = await fetch(`http://localhost:3001/api/users/${routeParams.userToken}`).then((response) => response.json()) as IAdminResponse;
+      const resp = await fetch(`${API_BASE}/users/${routeParams.userToken}`).then((response) => response.json()) as IAdminResponse;
       this.setState({
         isAdmin: resp.isAdmin,
         username: resp.username
