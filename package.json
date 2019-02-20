@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "cd backend && yarn prod"
+    "start": "cd backend && npm run prod"
   },
   "dependencies": {}
 }
