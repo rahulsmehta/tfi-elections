@@ -1,12 +1,10 @@
 import * as React from 'react';
 import * as style from './style.css';
-// import { connect } from 'react-redux';
 import { 
-  Button, Collapse, Intent, FormGroup, InputGroup, TextArea
+  Button, Collapse, Intent, FormGroup, InputGroup, TextArea, Toaster
 } from "@blueprintjs/core";
 import { RouteComponentProps } from 'react-router';
-// import { RootState } from 'app/reducers';
-// import { Election } from 'app/models';
+import { postData, API_BASE } from "app/utils";
 
 export namespace Admin {
   export interface Props extends RouteComponentProps<void> {
@@ -17,15 +15,18 @@ export namespace Admin {
       isEnrollOpen: boolean;
       isNewOpen: boolean;
       isAdministerOpen: boolean;
-      enrollState: IEnrollState;
+      newElectionState: INewElectionState;
+      enrollState: string;
   }
 }
 
-export interface IEnrollState {
+export interface INewElectionState {
   position: string,
   icon: string,
   candidates: string,
 }
+
+const adminToaster = Toaster.create();
 
 
 export class Admin extends React.Component<Admin.Props, Admin.State> {
@@ -41,16 +42,16 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
       isEnrollOpen: false,
       isNewOpen: false,
       isAdministerOpen: false,
-      enrollState: {
+      newElectionState: {
         position: "",
         icon: "",
         candidates: "",
-      }
+      },
+      enrollState: ""
   }
 
   public componentDidMount() {
       console.warn("Admin component mounted");
-    //   console.log(this.props.match);
 
   }
 
@@ -59,11 +60,18 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
   public toggleAdminister = () => this.setState({ isAdministerOpen: !this.state.isAdministerOpen });
 
 
+  private onEnrollChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+    const enrollState = this.getElementValue(event);
+    this.setState({ enrollState });
+  }
+
   public renderEnrollForm = () => {
       return (
           <div className={style.enrollContainer}>
-              <textarea style={{ width: "100%", height: "300px" }} />
-              <Button intent={Intent.PRIMARY} minimal={true} icon="plus" text="Add Voters" />
+              <textarea style={{ width: "100%", height: "300px" }} onInput={this.onEnrollChange} />
+              <Button intent={Intent.PRIMARY} minimal={true} icon="plus" text="Add Voters"
+                onClick={this.handleAddUsers}
+              />
               <Button intent={Intent.PRIMARY} minimal={true} icon="circle-arrow-right" text="Send Links" />
           </div>
       )
@@ -75,55 +83,48 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
   }
 
   private onPositionChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const enrollState = this.state.enrollState;
-    enrollState.position = this.getElementValue(event);
-    this.setState({ enrollState });
+    const newElectionState = this.state.newElectionState;
+    newElectionState.position = this.getElementValue(event);
+    this.setState({ newElectionState });
   }
 
   private onIconChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const enrollState = this.state.enrollState;
-    enrollState.icon = this.getElementValue(event);
-    this.setState({ enrollState });
+    const newElectionState = this.state.newElectionState;
+    newElectionState.icon = this.getElementValue(event);
+    this.setState({ newElectionState });
   }
 
   private onCandidateChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
-    const enrollState = this.state.enrollState;
-    enrollState.candidates = this.getElementValue(event);
-    this.setState({ enrollState });
+    const newElectionState = this.state.newElectionState;
+    newElectionState.candidates = this.getElementValue(event);
+    this.setState({ newElectionState });
   }
 
-  private checkEnrollState = (): boolean => {
-    const { enrollState } = this.state;
-    return (enrollState.position !== "" && enrollState.icon !== "" && enrollState.candidates !== "")
-  }
-
-  private postData(url = ``, data = {}) {
-    // Default options are marked with *
-      return fetch(url, {
-          method: "POST", // *GET, POST, PUT, DELETE, etc.
-          mode: "cors", // no-cors, cors, *same-origin
-          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: "same-origin", // include, *same-origin, omit
-          headers: {
-              "Content-Type": "application/json",
-              // "Content-Type": "application/x-www-form-urlencoded",
-          },
-          redirect: "follow", // manual, *follow, error
-          referrer: "no-referrer", // no-referrer, *client
-          body: JSON.stringify(data), // body data type must match "Content-Type" header
-      })
-      .then(response => response.json()); // parses response to JSON
+  private checknewElectionState = (): boolean => {
+    const { newElectionState } = this.state;
+    return (newElectionState.position !== "" && newElectionState.icon !== "" && newElectionState.candidates !== "")
   }
 
   private handleNewElection = () => {
-    if (!this.checkEnrollState()) {
+    if (!this.checknewElectionState()) {
       console.warn("Something is incorrect...");
+      return;
     }
-    this.postData(`http://localhost:3001/api/election/create`, this.state.enrollState).then(() => {
+    const request = { adminToken: this.props.adminToken, ...this.state.newElectionState };
+    postData(`${API_BASE}/election/create`, request).then(() => {
       window.location.reload();
     });
   }
 
+  private handleAddUsers = () => {
+    const ids = this.state.enrollState.split('\n');
+    postData(`${API_BASE}/users/add`, { ids, adminToken: this.props.adminToken }).then((resp) => {
+      const { added } = resp;
+      adminToaster.show({ message: `Successfully added ${added} users` , intent: "success" });
+    }).catch(() => {
+      adminToaster.show({ message: `Something went wrong!`, intent: "danger" })
+    })
+  }
 
   public renderNewElectionForm = () => {
     return (

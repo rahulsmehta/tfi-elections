@@ -13,7 +13,11 @@ const client = redis.createClient(utils.redisPort());
 /* GET users listing. */
 
 router.post('/create', function(req, res, next) {
-    const { position, icon, candidates } = req.body;
+    const { position, icon, candidates, adminToken } = req.body;
+    if (process.env.ADMIN_KEY !== adminToken) {
+        res.sendStatus(403);
+        return;
+    }
     const candidatesList = candidates.split('\n');
 
     const id = uuid();
@@ -35,7 +39,7 @@ router.get('/all', (req, res) => {
         if (!reply) {
             res.send(JSON.stringify([]));
         } else {
-            res.send(JSON.stringify(Object.values(reply)));
+            res.send(JSON.stringify(Object.values(reply).reverse()));
         }
     });
 });
