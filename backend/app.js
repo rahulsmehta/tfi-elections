@@ -27,6 +27,8 @@ app.use('/api/election', electionRouter);
 app.use('/api/users', usersRouter);
 
 console.log(path.join(__dirname+'/static/index.html'));
+console.log(process.env.ADMIN_KEY);
+
 app.use(express.static(__dirname +'/static')); //serves the other static files
 app.get('*', (req,res) =>{
   res.sendFile(path.join(__dirname+'/static/index.html'));
