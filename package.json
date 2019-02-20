@@ -5,5 +5,9 @@
   "scripts": {
     "start": "cd backend && npm run prod"
   },
+  "engines": {
+    "node": "8.15.0",
+    "yarn": "1.12.3"
+  },
   "dependencies": {}
 }
