@@ -26,9 +26,10 @@ app.use('/api/vote', voteRouter);
 app.use('/api/election', electionRouter);
 app.use('/api/users', usersRouter);
 
-app.use(express.static(__dirname +'./../frontend/build')); //serves the other static files
+console.log(path.join(__dirname+'/static/index.html'));
+app.use(express.static(__dirname +'/static')); //serves the other static files
 app.get('*', (req,res) =>{
-  res.sendFile(path.join(__dirname+'./../frontend/build/index.html'));
+  res.sendFile(path.join(__dirname+'/static/index.html'));
 });
 
 // catch 404 and forward to error handler

@@ -1,0 +1,125 @@
+@import url(https://unpkg.com/@blueprintjs/core@^3.13.0/lib/css/blueprint.css);
+@import url(https://unpkg.com/@blueprintjs/core@^3.13.0/lib/css/blueprint.css);
+@import url(https://unpkg.com/@blueprintjs/core@^3.13.0/lib/css/blueprint.css);
+._1QBS- {
+    background: green;
+}
+
+._1XDwq {
+    width: 36px;
+    height: 36px;
+    margin-right: 10px;
+}
+
+.A0bEz {
+    background-color: #F5F8FA;
+    height: 100%;
+    overflow: scroll;
+}
+
+._3STa4 {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+._3STa4 ._3GXg9 {
+    min-width: 250px;
+    min-height: 150px;
+    margin: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    color: #182026;
+    text-decoration: none; /* no underline */
+}
+
+._3STa4 ._3GXg9 ._3A6eD {
+    width: 100%;
+    text-align: center;
+}
+
+body {
+}
+.Umufu {
+    background: green;
+}
+
+._317XQ {
+    width: 36px;
+    height: 36px;
+    margin-right: 10px;
+}
+
+._38uYc {
+    /* background-color: #F5F8FA; */
+    height: 100%;
+    overflow: scroll;
+}
+
+._2_RCp {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0 10px 0;
+    width: 300px;
+}
+
+._2JYvX {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 25px;
+}
+
+._24KmK {
+    background: green;
+}
+
+._3JqjV {
+    width: 36px;
+    height: 36px;
+    margin-right: 10px;
+}
+
+._2L3lj {
+    background-color: #F5F8FA;
+    height: 100%;
+    overflow: hidden;
+}
+
+._219xi {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 25px;
+    overflow: scroll;
+}
+
+._19B1j {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 90%;
+}
+
+._219xi ._1lliC {
+    min-width: 250px;
+    max-height: 110px;
+    margin: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    color: #182026;
+    text-decoration: none; /* no underline */
+}
+
+._219xi ._1lliC ._128qD {
+    width: 100%;
+    text-align: center;
+}
+
+body {
+}
