@@ -115,17 +115,13 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
       .then(response => response.json()); // parses response to JSON
   }
 
-  private handleNewElection = async () => {
+  private handleNewElection = () => {
     if (!this.checkEnrollState()) {
       console.warn("Something is incorrect...");
     }
-    // const resp = await fetch(`http://localhost:3001/api/election/new`).then((response) => response.json()) as IAdminResponse;
-    const resp = await this.postData(`http://localhost:3001/api/election/create`, this.state.enrollState);
-    console.log(resp);
-      // this.setState({
-      //   isAdmin: resp.isAdmin,
-      //   username: resp.username
-      // });
+    this.postData(`http://localhost:3001/api/election/create`, this.state.enrollState).then(() => {
+      window.location.reload();
+    });
   }
 
 

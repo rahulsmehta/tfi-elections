@@ -29,6 +29,17 @@ router.post('/create', function(req, res, next) {
     res.send(JSON.stringify(responseBody));
 });
 
+router.get('/all', (req, res) => {
+    client.hgetall(KEY, (err, reply) => {
+        if (err) { res.send(500); }
+        if (!reply) {
+            res.send(JSON.stringify([]));
+        } else {
+            res.send(JSON.stringify(Object.values(reply)));
+        }
+    });
+});
+
 router.get('/:electionId', (req, res, next) => {
     const id = req.param('electionId', null);
     if (!id) {
@@ -36,9 +47,7 @@ router.get('/:electionId', (req, res, next) => {
         res.send(500);
     }
     client.hget(KEY, id, (err, reply) => {
-        if (err) {
-            res.send(500);
-        }
+        if (err) { res.send(500); }
         res.send(reply);
     });
 });
@@ -49,8 +58,10 @@ router.post('/:electionId/delete', (req, res, next) => {
         console.error("Invalid election id");
         res.send(500);
     }
-    console.log(id);
-    res.send(JSON.stringify({}));
+    client.hdel(KEY, [ id ] , (err, reply) => {
+        if (err) { res.send(500); }
+        res.send({ response: reply });
+    });
 });
 
 

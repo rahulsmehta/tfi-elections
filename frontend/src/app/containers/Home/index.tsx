@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as style from './style.css';
-import { connect } from 'react-redux';
 import { 
   Navbar,
   Button,
@@ -20,20 +19,20 @@ import {
   Drawer
 } from "@blueprintjs/core";
 import { RouteComponentProps } from 'react-router';
-import { RootState } from 'app/reducers';
+// import { RootState } from 'app/reducers';
 import { Election } from 'app/models';
 import { Admin } from '../Admin';
 
 export namespace Home {
   export interface Props extends RouteComponentProps<void> {
-    elections: RootState.ElectionState;
-    // actions: TodoActions;
+    // elections: RootState.ElectionState;
   }
 
   export interface State {
     isAdmin: boolean | undefined;
     username: string | undefined;
     isAdminOpen: boolean;
+    elections: Election[];
   }
 }
 
@@ -46,11 +45,6 @@ export interface IAdminResponse {
   username: string;
 }
 
-@connect(
-  (state: RootState, ownProps): Partial<Home.Props> => {
-    const { elections } = state;
-    return { elections };
-  })
 export class Home extends React.Component<Home.Props, Home.State> {
   static defaultProps: Partial<Home.Props> = {
   };
@@ -58,7 +52,8 @@ export class Home extends React.Component<Home.Props, Home.State> {
   public state: Home.State = {
     isAdmin: undefined,
     username: undefined,
-    isAdminOpen: false
+    isAdminOpen: false,
+    elections: []
   }
 
   constructor(props: Home.Props, context?: any) {
@@ -67,12 +62,17 @@ export class Home extends React.Component<Home.Props, Home.State> {
 
   public componentDidMount() {
       console.warn("Home component mounted");
-      const routeParams = (this.props.match.params as unknown) as IRouteParams;
-      console.log(routeParams)
       this.isAdmin();
+      this.loadElections()
   }
 
-  public async isAdmin() {
+  private async loadElections() {
+    const resp = await fetch(`http://localhost:3001/api/election/all`).then((value) => value.json()) as string[];
+    const elections: Election[] = resp.map(r => JSON.parse(r));
+    this.setState({ elections })
+  }
+
+  private async isAdmin() {
       const routeParams = (this.props.match.params as unknown) as IRouteParams;
       const resp = await fetch(`http://localhost:3001/api/users/${routeParams.userToken}`).then((response) => response.json()) as IAdminResponse;
       this.setState({
@@ -126,7 +126,7 @@ export class Home extends React.Component<Home.Props, Home.State> {
   }
 
   private renderCards = (state: Election.ElectionState) => {
-    const elections = this.props.elections;
+    const elections = this.state.elections;
     return elections.filter(e => e.state == state).map(this.renderCard);
   }
 
@@ -134,6 +134,7 @@ export class Home extends React.Component<Home.Props, Home.State> {
   private handleClose = () => this.setState({ isAdminOpen: false });
 
   render() {
+    const { elections, username } = this.state;
     const routeParams = (this.props.match.params as unknown) as IRouteParams;
     const adminButton = this.state.isAdmin ? (
             <Button className="bp3-minimal" icon="dashboard" text="Admin" onClick={this.handleOpen} /> 
@@ -151,6 +152,20 @@ export class Home extends React.Component<Home.Props, Home.State> {
           />
       );
 
+    const cards = elections.length > 0 ? (
+        <div>
+          <div className={style.container} >
+            {this.renderCards(Election.ElectionState.ACTIVE)}
+          </div>
+          <div className={style.container} >
+            {this.renderCards(Election.ElectionState.CLOSED)}
+          </div>
+          <div className={style.container} >
+            {this.renderCards(Election.ElectionState.COMPLETED)}
+          </div>
+        </div>
+    ) : undefined;
+
     return (
       <div className={style.appContainer}>
         <Navbar>
@@ -162,20 +177,12 @@ export class Home extends React.Component<Home.Props, Home.State> {
           </Navbar.Group>
           <Navbar.Group align={Alignment.RIGHT}>
             {adminButton}
-            <Tooltip position={Position.BOTTOM_LEFT} content={"Signed in as " +this.state.username}>
+            <Tooltip position={Position.BOTTOM_LEFT} content={"Signed in as " + username} disabled={!username}>
               <Button className="bp3-minimal" icon="person" />
             </Tooltip>
           </Navbar.Group>
         </Navbar>
-        <div className={style.container} >
-          {this.renderCards(Election.ElectionState.ACTIVE)}
-        </div>
-        <div className={style.container} >
-          {this.renderCards(Election.ElectionState.CLOSED)}
-        </div>
-        <div className={style.container} >
-          {this.renderCards(Election.ElectionState.COMPLETED)}
-        </div>
+        { cards }
         <Drawer
           icon="dashboard"
           onClose={this.handleClose}
