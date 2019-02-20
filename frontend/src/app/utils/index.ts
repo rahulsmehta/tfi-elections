@@ -29,3 +29,5 @@ export function postData(url = ``, data = {}) {
 }
 
 export const API_BASE = 'http://localhost:3001/api';
+
+export const TI_LOGO = 'https://pbs.twimg.com/profile_images/616272772101058560/elds97gt_400x400.jpg';

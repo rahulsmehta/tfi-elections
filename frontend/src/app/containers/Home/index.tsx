@@ -22,6 +22,7 @@ import { RouteComponentProps } from 'react-router';
 // import { RootState } from 'app/reducers';
 import { Election } from 'app/models';
 import { Admin } from '../Admin';
+import { TI_LOGO } from "app/utils";
 
 export namespace Home {
   export interface Props extends RouteComponentProps<void> {
@@ -188,7 +189,7 @@ export class Home extends React.Component<Home.Props, Home.State> {
       <div className={style.appContainer}>
         <Navbar>
           <Navbar.Group align={Alignment.LEFT}>
-            <img className={style.icon} src="../../assets/tfi-logo-large.jpg" />
+            <img className={style.icon} src={TI_LOGO} />
             <Navbar.Heading>TFI Elections Portal</Navbar.Heading>
             <Navbar.Divider />
             { breadcrumbs }

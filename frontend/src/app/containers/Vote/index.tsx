@@ -19,7 +19,7 @@ import {
 import { RouteComponentProps } from 'react-router';
 import { Election } from 'app/models';
 import { IAdminResponse } from "../Home";
-import { API_BASE, postData } from 'app/utils';
+import { API_BASE, postData, TI_LOGO } from 'app/utils';
 
 export namespace Vote {
   export interface Props extends RouteComponentProps<void> {
@@ -38,14 +38,6 @@ export interface IRouteParams {
   userToken: string;
 }
 
-// @connect(
-//   (state: RootState, ownProps: Vote.Props): Partial<Vote.Props> => {
-//     const { elections } = state;
-
-//     const { electionId } = (ownProps.match.params as unknown) as IRouteParams;
-//     const election = elections.filter(e => e.id == electionId)[0];
-//     return { election };
-//   })
 export class Vote extends React.Component<Vote.Props, Vote.State> {
   public state: Vote.State = {
     selected: undefined,
@@ -121,19 +113,6 @@ export class Vote extends React.Component<Vote.Props, Vote.State> {
       elevation = Elevation.ZERO;
       interactive = false;
       onClick = () => {};
-      return (
-        <Tooltip content="Voting is currently closed" intent={Intent.WARNING} key={candidate} >
-          <Card
-            interactive={interactive}
-            elevation={elevation}
-            className={style.card}
-            onClick={onClick}
-          >
-            <H3>{candidate}</H3>
-            {submitButton}
-          </Card>
-        </Tooltip>
-      );
     }
     return (
       <Card
@@ -172,10 +151,8 @@ export class Vote extends React.Component<Vote.Props, Vote.State> {
     }
     else if (election.state == Election.ElectionState.ACTIVE) {
       return this.renderCards(election);
-    } else if (election.state == Election.ElectionState.CLOSED) {
-      return this.renderCardsClosed(election);
     } else {
-      throw new Error("foo");
+      return this.renderCardsClosed(election);
     }
   }
 
@@ -204,7 +181,7 @@ export class Vote extends React.Component<Vote.Props, Vote.State> {
       <div className={style.appContainer}>
         <Navbar>
           <Navbar.Group align={Alignment.LEFT}>
-            <img className={style.icon} src="../../assets/tfi-logo-large.jpg" />
+            <img className={style.icon} src={TI_LOGO} />
             <Navbar.Heading>TFI Elections Portal</Navbar.Heading>
             <Navbar.Divider />
             { breadcrumbs }
