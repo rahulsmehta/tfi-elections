@@ -19,7 +19,7 @@ import {
 import { RouteComponentProps } from 'react-router';
 import { Election } from 'app/models';
 import { IAdminResponse } from "../Home";
-import { API_BASE } from 'app/utils';
+import { API_BASE, postData } from 'app/utils';
 
 export namespace Vote {
   export interface Props extends RouteComponentProps<void> {
@@ -88,6 +88,16 @@ export class Vote extends React.Component<Vote.Props, Vote.State> {
     }}/></Breadcrumb>;
   }
 
+  private handleVoteSubmit = (candidate: string) => {
+    const routeParams = (this.props.match.params as unknown) as IRouteParams;
+    const { election } = this.state;
+
+    const request = { candidate, userToken: routeParams.userToken };
+    postData(`${API_BASE}/vote/${election!.id}/${election!.round}`, request).then(() => {
+      window.location.reload();
+    })
+  }
+
   private renderCard = (candidate: string, disable: boolean) => {
     const { selected } = this.state;
     const isSelected = selected !== undefined && selected == candidate;
@@ -102,7 +112,7 @@ export class Vote extends React.Component<Vote.Props, Vote.State> {
     const submitButton = isSelected ? <Button intent={Intent.PRIMARY} text={"Submit Vote"} icon="tick"
       onClick={() => {
         if(confirm(`Do you want to cast your vote for ${candidate}?`)) {
-          alert("Voted for " + candidate);
+          this.handleVoteSubmit(candidate);
         }
       }}
     /> : undefined;
@@ -168,7 +178,6 @@ export class Vote extends React.Component<Vote.Props, Vote.State> {
       throw new Error("foo");
     }
   }
-
 
   render() {
     const routeParams = (this.props.match.params as unknown) as IRouteParams;

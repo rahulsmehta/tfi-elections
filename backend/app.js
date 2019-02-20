@@ -8,6 +8,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var electionRouter = require('./routes/election');
+var voteRouter = require('./routes/vote');
 
 var app = express();
 
@@ -34,6 +35,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 
+app.use('/api/vote', voteRouter);
 app.use('/api/election', electionRouter);
 app.use('/api/users', usersRouter);
 
