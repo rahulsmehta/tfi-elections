@@ -7,6 +7,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var electionRouter = require('./routes/election');
 
 var app = express();
 
@@ -33,6 +34,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 
+app.use('/api/election', electionRouter);
 app.use('/api/users', usersRouter);
 
 app.use(express.static(__dirname +'./../frontend/build')); //serves the other static files

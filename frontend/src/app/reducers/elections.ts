@@ -26,7 +26,8 @@ const initialState: RootState.ElectionState = [
     position: "President",
     icon: "globe",
     startingCandidates: candidates,
-    currentCandidates: candidates 
+    currentCandidates: candidates,
+    round: 0
   },
   {
     id: "000-000-001",
@@ -34,7 +35,8 @@ const initialState: RootState.ElectionState = [
     position: "Vice President",
     icon: "globe-network",
     startingCandidates: candidates,
-    currentCandidates: candidates 
+    currentCandidates: candidates,
+    round: 0
   },
   {
     id: "000-000-002",
@@ -42,7 +44,9 @@ const initialState: RootState.ElectionState = [
     position: "Treasurer",
     icon: "dollar",
     startingCandidates: [],
-    currentCandidates: []
+    currentCandidates: [],
+    round: 0
+
   },
   {
     id: "000-000-003",
@@ -50,7 +54,8 @@ const initialState: RootState.ElectionState = [
     position: "Social Chair",
     icon: "people",
     startingCandidates: [],
-    currentCandidates: []
+    currentCandidates: [],
+    round: 0
   },
   {
     id: "000-000-004",
@@ -58,7 +63,9 @@ const initialState: RootState.ElectionState = [
     position: "Safety Czar",
     icon: "shield",
     startingCandidates: [],
-    currentCandidates: []
+    currentCandidates: [],
+    round: 0
+
   },
   {
     id: "000-000-005",
@@ -66,7 +73,9 @@ const initialState: RootState.ElectionState = [
     position: "House Manager",
     icon: "home",
     startingCandidates: [],
-    currentCandidates: []
+    currentCandidates: [],
+    round: 0
+
   }
 ];
 

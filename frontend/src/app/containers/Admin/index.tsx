@@ -9,36 +9,43 @@ import { RouteComponentProps } from 'react-router';
 // import { Election } from 'app/models';
 
 export namespace Admin {
-  export interface Props extends RouteComponentProps<void> {}
+  export interface Props extends RouteComponentProps<void> {
+    adminToken: string,
+  }
 
   export interface State {
       isEnrollOpen: boolean;
       isNewOpen: boolean;
       isAdministerOpen: boolean;
+      enrollState: IEnrollState;
   }
 }
 
+export interface IEnrollState {
+  position: string,
+  icon: string,
+  candidates: string,
+}
 
-// @connect(
-//   (state: RootState, ownProps: Admin.Props): Partial<Admin.Props> => {
-//     const { elections, user } = state;
 
-//     const { electionId } = (ownProps.match.params as unknown) as IRouteParams;
-//     const election = elections.filter(e => e.id == electionId)[0];
-//     return { election, user };
-//   })
 export class Admin extends React.Component<Admin.Props, Admin.State> {
 
   constructor(props: Admin.Props, context?: any) {
     super(props, context);
     // this.handleClearCompleted = this.handleClearCompleted.bind(this);
     // this.handleFilterChange = this.handleFilterChange.bind(this);
+    this.onPositionChange = this.onPositionChange.bind(this);
   }
 
   public state: Admin.State = {
       isEnrollOpen: false,
       isNewOpen: false,
-      isAdministerOpen: false
+      isAdministerOpen: false,
+      enrollState: {
+        position: "",
+        icon: "",
+        candidates: "",
+      }
   }
 
   public componentDidMount() {
@@ -62,23 +69,88 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
       )
   }
 
+  private getElementValue = (event: React.FormEvent) => {
+    let element = event.currentTarget as HTMLInputElement;
+    return element.value;
+  }
+
+  private onPositionChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const enrollState = this.state.enrollState;
+    enrollState.position = this.getElementValue(event);
+    this.setState({ enrollState });
+  }
+
+  private onIconChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const enrollState = this.state.enrollState;
+    enrollState.icon = this.getElementValue(event);
+    this.setState({ enrollState });
+  }
+
+  private onCandidateChange = (event: React.FormEvent<HTMLTextAreaElement>) => {
+    const enrollState = this.state.enrollState;
+    enrollState.candidates = this.getElementValue(event);
+    this.setState({ enrollState });
+  }
+
+  private checkEnrollState = (): boolean => {
+    const { enrollState } = this.state;
+    return (enrollState.position !== "" && enrollState.icon !== "" && enrollState.candidates !== "")
+  }
+
+  private postData(url = ``, data = {}) {
+    // Default options are marked with *
+      return fetch(url, {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          mode: "cors", // no-cors, cors, *same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+              "Content-Type": "application/json",
+              // "Content-Type": "application/x-www-form-urlencoded",
+          },
+          redirect: "follow", // manual, *follow, error
+          referrer: "no-referrer", // no-referrer, *client
+          body: JSON.stringify(data), // body data type must match "Content-Type" header
+      })
+      .then(response => response.json()); // parses response to JSON
+  }
+
+  private handleNewElection = async () => {
+    if (!this.checkEnrollState()) {
+      console.warn("Something is incorrect...");
+    }
+    // const resp = await fetch(`http://localhost:3001/api/election/new`).then((response) => response.json()) as IAdminResponse;
+    const resp = await this.postData(`http://localhost:3001/api/election/create`, this.state.enrollState);
+    console.log(resp);
+      // this.setState({
+      //   isAdmin: resp.isAdmin,
+      //   username: resp.username
+      // });
+  }
+
+
   public renderNewElectionForm = () => {
     return (
         <div className={style.enrollContainer}>
             <FormGroup label={"Position"} >
-                <InputGroup id="new-election-position" placeholder={"President"} />
+                <InputGroup
+                  id="new-election-position"
+                  placeholder={"President"}
+                  onInput={this.onPositionChange}
+                />
             </FormGroup>
             <FormGroup label={"Icon"} >
-                <InputGroup id="new-election-icon" placeholder={"globe-network"} />
+                <InputGroup id="new-election-icon" placeholder={"globe-network"} onInput={this.onIconChange} />
             </FormGroup>
             <FormGroup label={"Candidates"}>
                 <TextArea
                     intent={Intent.PRIMARY}
                     style={{ width: "100%", height: "150px" }}
                     placeholder={"Enter one candidate per line"}
+                    onInput={this.onCandidateChange}
                 />
             </FormGroup>
-            <Button intent={Intent.PRIMARY} minimal={true} icon="add" text="Add Election" />
+            <Button intent={Intent.PRIMARY} minimal={true} icon="add" text="Add Election" onClick={this.handleNewElection} />
         </div>
     );
   }

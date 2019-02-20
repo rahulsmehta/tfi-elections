@@ -7,6 +7,7 @@ export interface Election {
   state: Election.ElectionState;
   startingCandidates: Candidate[];
   currentCandidates: Candidate[];
+  round: number;
 }
 
 export interface Candidate {

@@ -27,7 +27,6 @@ import { Admin } from '../Admin';
 export namespace Home {
   export interface Props extends RouteComponentProps<void> {
     elections: RootState.ElectionState;
-    user: string;
     // actions: TodoActions;
   }
 
@@ -49,10 +48,10 @@ export interface IAdminResponse {
 
 @connect(
   (state: RootState, ownProps): Partial<Home.Props> => {
-    const { elections, user } = state;
-    return { elections, user };
+    const { elections } = state;
+    return { elections };
   })
-export class Home extends React.Component<Home.Props> {
+export class Home extends React.Component<Home.Props, Home.State> {
   static defaultProps: Partial<Home.Props> = {
   };
 
@@ -119,7 +118,9 @@ export class Home extends React.Component<Home.Props> {
       >
         <H3>{election.position}</H3>
         <Icon icon={election.icon} iconSize={40} />
-        <Tag intent={this.mapStateToIntent(election.state)} className={style.status} > {election.state.toLocaleUpperCase()} </Tag>
+        <Tag intent={this.mapStateToIntent(election.state)} className={style.status} > 
+          {election.state.toLocaleUpperCase()} (Round {election.round+1})
+        </Tag>
       </Card>
     );
   }
@@ -181,7 +182,7 @@ export class Home extends React.Component<Home.Props> {
           title={"Administer Elections"}
           isOpen={this.state.isAdminOpen}
         >
-          <Admin {...this.props} />
+          <Admin adminToken={routeParams.userToken} {...this.props} />
         </Drawer>
       </div>
     );
