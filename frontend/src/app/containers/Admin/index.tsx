@@ -72,7 +72,9 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
               <Button intent={Intent.PRIMARY} minimal={true} icon="plus" text="Add Voters"
                 onClick={this.handleAddUsers}
               />
-              <Button intent={Intent.PRIMARY} minimal={true} icon="circle-arrow-right" text="Send Links" />
+              <Button intent={Intent.PRIMARY} minimal={true} icon="circle-arrow-right" text="Send Links" 
+                onClick={this.handleSendEmail}
+              />
           </div>
       )
   }
@@ -124,6 +126,12 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
     }).catch(() => {
       adminToaster.show({ message: `Something went wrong!`, intent: "danger" })
     })
+  }
+
+  private handleSendEmail = () => {
+    postData(`${API_BASE}/users/email`, { adminToken: this.props.adminToken }).then((resp) => {
+      adminToaster.show({ message: "Links sent to voters", intent: "success" })
+    });
   }
 
   public renderNewElectionForm = () => {

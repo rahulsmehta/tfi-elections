@@ -6,8 +6,9 @@ const utils = require('../utils');
 const { promisify } = require('util');
 
 const client = redis.createClient(utils.redisPort());
-const hseta = promisify(client.hset).bind(client);
-const hgeta = promisify(client.hget).bind(client);
+const hsetp = promisify(client.hset).bind(client);
+const hgetp = promisify(client.hget).bind(client);
+const hgetallp = promisify(client.hgetall).bind(client);
 
 const KEY = "USERS"
 
@@ -17,7 +18,7 @@ router.get('/:userId', async (req, res, next) => {
     const responseJson = { isAdmin: true, username: "admin" };
     res.send(JSON.stringify(responseJson));
   } else {
-    const raw = JSON.parse(await hgeta(KEY, userId));
+    const raw = JSON.parse(await hgetp(KEY, userId));
     const responseJson = { isAdmin: false, username: raw.netId }
     res.send(JSON.stringify(responseJson));
   }
@@ -39,10 +40,46 @@ router.post('/add', async (req, res) => {
   console.log(profiles);
 
   const promises = await Promise.all(profiles.map((value) => {
-    return hseta(KEY, value.id, JSON.stringify(value));
+    return hsetp(KEY, value.id, JSON.stringify(value));
   }));
   const added = promises.reduce((p, c) => p + c);
   res.send(JSON.stringify({ added }));
 });
+
+router.post('/email', async (req, res) => {
+  const { adminToken } = req.body;
+  const baseUrl = `http://${req.get('Host')}`;
+  if (process.env.ADMIN_KEY !== adminToken) {
+      res.sendStatus(403);
+      return;
+  }
+
+  const users = Object.values(await hgetallp(KEY)).map(v => JSON.parse(v));
+  const tuples = users.map((user) => {
+    return {
+      email: user.email,
+      link: `${baseUrl}/${user.id}`
+    }
+  });
+  console.log(tuples);
+
+  res.send("{}");
+
+  // const profiles = ids.map((netId) => {
+  //   return {
+  //     netId,
+  //     email: `${netId}@princeton.edu`,
+  //     id: uuid()
+  //   }
+  // });
+  // console.log(profiles);
+
+  // const promises = await Promise.all(profiles.map((value) => {
+  //   return hsetp(KEY, value.id, JSON.stringify(value));
+  // }));
+  // const added = promises.reduce((p, c) => p + c);
+  // res.send(JSON.stringify({ added }));
+});
+
 
 module.exports = router;
