@@ -3,6 +3,7 @@ const redis = require('redis');
 const uuid = require('uuid/v4');
 const { promisify } = require('util');
 const utils = require('../utils');
+const md5 = require('md5');
 
 
 const router = express.Router();
@@ -14,7 +15,51 @@ const hsetp = promisify(client.hset).bind(client);
 const hgetp = promisify(client.hget).bind(client);
 const hgetallp = promisify(client.hgetall).bind(client);
 
-/* GET users listing. */
+const stopRoundAsync = async (req, res) => {
+    const electionId = req.param('electionId', null);
+    const election = JSON.parse(await hgetp(KEY, electionId));
+    const currentCandidates = election.currentCandidates;
+
+    const voteKey = `${election.id}_${election.round}`;
+    const rawVoteMap = await hgetallp(voteKey)
+    const votes = Object.values(rawVoteMap);
+
+    // process voteMap to determine next round - all candidates < 10% are dropped,
+    // and if all have >= 10%, then candidate with fewest votes is dropped
+    const nVotes = votes.length;
+    const voteMap = votes.reduce( (acc, o) => (acc[o] = (acc[o] || 0)+1, acc), {} );
+
+    const votePct = {}
+    Object.keys(voteMap).forEach((candidate) => {
+        votePct[candidate] = voteMap[candidate]/nVotes;
+    });
+    let remainingCandidates = Object.keys(voteMap).filter((candidate) => {
+        return votePct[candidate] >= 0.1;
+    });
+    if (remainingCandidates.length == currentCandidates.length) {
+        const sortedCandidates = Object.keys(voteMap).sort((a, b) => {
+            return voteMap[b] - voteMap[a];
+        });
+        remainingCandidates = sortedCandidates.slice(0, sortedCandidates.length-1);
+    }
+
+    election.currentCandidates = remainingCandidates;
+    if (remainingCandidates.length == 1) {
+        election.state = 'completed';
+    } else {
+        election.state = 'closed';
+    }
+
+    const resp = await hsetp(KEY, electionId, JSON.stringify(election));
+
+    res.send(JSON.stringify({ resp }));
+};
+
+
+router.get('/verify', function(req, res, next) {
+    const hash =  md5(stopRoundAsync);
+    res.send(hash);
+});
 
 router.post('/create', function(req, res, next) {
     const { position, icon, candidates, adminToken } = req.body;
@@ -74,48 +119,7 @@ router.post('/:electionId/start-round', async (req,res) => {
     res.send(JSON.stringify({ result }));
 });
 
-router.post('/:electionId/stop-round', async (req, res) => {
-    const electionId = req.param('electionId', null);
-    const election = JSON.parse(await hgetp(KEY, electionId));
-    const currentCandidates = election.currentCandidates;
-    // election.state = 'closed';
-
-    const voteKey = `${election.id}_${election.round}`;
-    const rawVoteMap = await hgetallp(voteKey)
-    const votes = Object.values(rawVoteMap);
-
-    // process voteMap to determine next round - all candidates < 10% are dropped,
-    // and if all have >= 10%, then candidate with fewest votes is dropped
-    const nVotes = votes.length;
-    const voteMap = votes.reduce( (acc, o) => (acc[o] = (acc[o] || 0)+1, acc), {} );
-
-    const votePct = {}
-    Object.keys(voteMap).forEach((candidate) => {
-        votePct[candidate] = voteMap[candidate]/nVotes;
-    });
-    // console.log(votePct);
-
-    let remainingCandidates = Object.keys(voteMap).filter((candidate) => {
-        return votePct[candidate] >= 0.1;
-    });
-    if (remainingCandidates.length == currentCandidates.length) {
-        const sortedCandidates = Object.keys(voteMap).sort((a, b) => {
-            return voteMap[b] - voteMap[a];
-        });
-        remainingCandidates = sortedCandidates.slice(0, sortedCandidates.length-1);
-    }
-
-    election.currentCandidates = remainingCandidates;
-    if (remainingCandidates.length == 1) {
-        election.state = 'completed';
-    } else {
-        election.state = 'closed';
-    }
-
-    const resp = await hsetp(KEY, electionId, JSON.stringify(election));
-
-    res.send(JSON.stringify({ resp }));
-});
+router.post('/:electionId/stop-round', stopRoundAsync);
 
 router.post('/:electionId/delete', (req, res, next) => {
     const id = req.param('electionId', null);

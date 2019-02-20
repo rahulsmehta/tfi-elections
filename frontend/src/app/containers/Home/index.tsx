@@ -176,7 +176,7 @@ export class Home extends React.Component<Home.Props, Home.State> {
           title={"Administer Elections"}
           isOpen={this.state.isAdminOpen}
         >
-          <Admin adminToken={routeParams.userToken} {...this.props} />
+          <Admin adminToken={routeParams.userToken} elections={this.state.elections} {...this.props} />
         </Drawer>
       </div> : <div style={{ padding: "50px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <H3>You are not authenticated!</H3>

@@ -219,6 +219,11 @@ character-parser@1.2.1:
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/character-parser/-/character-parser-1.2.1.tgz#c0dde4ab182713b919b970959a123ecc1a30fcd6"
   integrity sha1-wN3kqxgnE7kZuXCVmhI+zBow/NY=
 
+charenc@~0.0.1:
+  version "0.0.2"
+  resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/charenc/-/charenc-0.0.2.tgz#c0a1d2f3a7092e03774bfa83f14c0fc5790a8667"
+  integrity sha1-wKHS86cJLgN3S/qD8UwPxXkKhmc=
+
 clean-css@^3.1.9:
   version "3.4.28"
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/clean-css/-/clean-css-3.4.28.tgz#bf1945e82fc808f55695e6ddeaec01400efd03ff"
@@ -314,6 +319,11 @@ cors@^2.8.5:
   dependencies:
     object-assign "^4"
     vary "^1"
+
+crypt@~0.0.1:
+  version "0.0.2"
+  resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/crypt/-/crypt-0.0.2.tgz#88d7ff7ec0dfb86f713dc87bbb42d044d3e6c41b"
+  integrity sha1-iNf/fsDfuG9xPch7u0LQRNPmxBs=
 
 css-parse@1.0.4:
   version "1.0.4"
@@ -574,7 +584,7 @@ ipaddr.js@1.8.0:
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/ipaddr.js/-/ipaddr.js-1.8.0.tgz#eaa33d6ddd7ace8f7f6fe0c9ca0440e706738b1e"
   integrity sha1-6qM9bd16zo9/b+DJygRA5wZzix4=
 
-is-buffer@^1.1.5:
+is-buffer@^1.1.5, is-buffer@~1.1.1:
   version "1.1.6"
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
   integrity sha1-76ouqdqg16suoTqXsritUf776L4=
@@ -669,6 +679,15 @@ longest@^1.0.1:
   version "1.0.1"
   resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
   integrity sha1-MKCy2jj3N3DoKUoNIuZiXtd9AJc=
+
+md5@^2.2.1:
+  version "2.2.1"
+  resolved "https://artifactory.palantir.build/artifactory/api/npm/all-npm/md5/-/md5-2.2.1.tgz#53ab38d5fe3c8891ba465329ea23fac0540126f9"
+  integrity sha1-U6s41f48iJG6RlMp6iP6wFQBJvk=
+  dependencies:
+    charenc "~0.0.1"
+    crypt "~0.0.1"
+    is-buffer "~1.1.1"
 
 media-typer@0.3.0:
   version "0.3.0"

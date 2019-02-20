@@ -1,14 +1,16 @@
 import * as React from 'react';
 import * as style from './style.css';
 import { 
-  Button, Collapse, Intent, FormGroup, InputGroup, TextArea, Toaster
+  Button, Collapse, Intent, FormGroup, InputGroup, TextArea, Toaster, Switch
 } from "@blueprintjs/core";
 import { RouteComponentProps } from 'react-router';
 import { postData, API_BASE } from "app/utils";
+import { Election } from 'app/models';
 
 export namespace Admin {
   export interface Props extends RouteComponentProps<void> {
     adminToken: string,
+    elections: Election[],
   }
 
   export interface State {
@@ -160,6 +162,38 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
     );
   }
 
+  private onToggleElection = async (election: Election) => {
+    // start-round
+    if (election.state == Election.ElectionState.CLOSED) {
+      postData(`${API_BASE}/election/${election.id}/start-round`).then(() => {
+        window.location.reload();
+      })
+    // stop-round
+    } else if (election.state == Election.ElectionState.ACTIVE) {
+      postData(`${API_BASE}/election/${election.id}/stop-round`).then(() => {
+        window.location.reload();
+      })
+    } else {
+      // do nothing
+    }
+  }
+
+  private renderElectionControls = () => {
+    const { elections } = this.props;
+    const inner = elections.map(e => {
+      return <Switch 
+        label={e.position}
+        disabled={e.state == Election.ElectionState.COMPLETED}
+        checked={e.state == Election.ElectionState.ACTIVE}
+        onChange={() => this.onToggleElection(e)}
+        key={e.id}
+      />
+    });
+    return <FormGroup>
+      { inner }
+    </FormGroup>
+  }
+
   render() {
     return (
       <div className={style.appContainer}>
@@ -193,9 +227,7 @@ export class Admin extends React.Component<Admin.Props, Admin.State> {
                 minimal={true}
                />
               <Collapse isOpen={this.state.isAdministerOpen}>
-                    <pre>
-                        Dummy text.
-                    </pre>
+                {this.renderElectionControls()}
                 </Collapse>
           </div>
         </div>
