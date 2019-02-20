@@ -42,7 +42,7 @@ export interface IRouteParams {
 
 export interface IAdminResponse {
   isAdmin: boolean;
-  username: string;
+  username: string | undefined;
 }
 
 export class Home extends React.Component<Home.Props, Home.State> {
@@ -106,6 +106,7 @@ export class Home extends React.Component<Home.Props, Home.State> {
 
   private renderCard = (election: Election) => {
     const routeParams = (this.props.match.params as unknown) as IRouteParams;
+    const roundText = election.round >= 1 ? `(Round ${election.round})` : "";
     return (
       <Card
         interactive={true}
@@ -119,7 +120,7 @@ export class Home extends React.Component<Home.Props, Home.State> {
         <H3>{election.position}</H3>
         <Icon icon={election.icon} iconSize={40} />
         <Tag intent={this.mapStateToIntent(election.state)} className={style.status} > 
-          {election.state.toLocaleUpperCase()} (Round {election.round+1})
+          {election.state.toLocaleUpperCase()} {roundText}
         </Tag>
       </Card>
     );
@@ -166,6 +167,23 @@ export class Home extends React.Component<Home.Props, Home.State> {
         </div>
     ) : undefined;
 
+    const pageBody = this.state.username ? 
+      <div>
+        { cards }
+        <Drawer
+          icon="dashboard"
+          onClose={this.handleClose}
+          title={"Administer Elections"}
+          isOpen={this.state.isAdminOpen}
+        >
+          <Admin adminToken={routeParams.userToken} {...this.props} />
+        </Drawer>
+      </div> : <div style={{ padding: "50px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        <H3>You are not authenticated!</H3>
+        <p>Please confirm that your user token is correct and try again.</p>
+      </div>;
+
+
     return (
       <div className={style.appContainer}>
         <Navbar>
@@ -182,15 +200,7 @@ export class Home extends React.Component<Home.Props, Home.State> {
             </Tooltip>
           </Navbar.Group>
         </Navbar>
-        { cards }
-        <Drawer
-          icon="dashboard"
-          onClose={this.handleClose}
-          title={"Administer Elections"}
-          isOpen={this.state.isAdminOpen}
-        >
-          <Admin adminToken={routeParams.userToken} {...this.props} />
-        </Drawer>
+        { pageBody }
       </div>
     );
   }

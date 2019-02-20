@@ -5,14 +5,9 @@ export interface Election {
   position: string;
   icon: IconName;
   state: Election.ElectionState;
-  startingCandidates: Candidate[];
-  currentCandidates: Candidate[];
+  startingCandidates: string[];
+  currentCandidates: string[];
   round: number;
-}
-
-export interface Candidate {
-    id: string;
-    name: string;
 }
 
 export namespace Election {

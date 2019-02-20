@@ -1,23 +1,10 @@
 import { handleActions } from 'redux-actions';
 import { RootState } from './state';
-import { Election, Candidate } from "../models";
+import { Election  } from "../models";
 // import { TodoActions } from 'app/actions/todos';
 // import { TodoModel } from 'app/models';
 
-const candidates: Candidate[] = [
-  {
-    id: "000",
-    name: "Rahul Mehta"
-  },
-  {
-    id: "001",
-    name: "PJ Greenbaum"
-  },
-  {
-    id: "002",
-    name: "Maggie McCallister"
-  },
-]
+const candidates = ["PJ", "Rahul"];
 
 const initialState: RootState.ElectionState = [
   {

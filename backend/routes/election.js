@@ -1,6 +1,7 @@
 const express = require('express');
 const redis = require('redis');
 const uuid = require('uuid/v4');
+const { promisify } = require('util');
 const utils = require('../utils');
 
 
@@ -9,6 +10,8 @@ const router = express.Router();
 const KEY = 'ELECTION';
 
 const client = redis.createClient(utils.redisPort());
+const hsetp = promisify(client.hset).bind(client);
+const hgetp = promisify(client.hget).bind(client);
 
 /* GET users listing. */
 
@@ -54,6 +57,20 @@ router.get('/:electionId', (req, res, next) => {
         if (err) { res.send(500); }
         res.send(reply);
     });
+});
+
+router.post('/:electionId/start-round', async (req,res) => {
+    // const { adminToken } = req.body;
+    // if (process.env.ADMIN_KEY !== adminToken) {
+    //     res.sendStatus(403);
+    //     return;
+    // }
+    const electionId = req.param('electionId', null);
+    const election = JSON.parse(await hgetp(KEY, electionId));
+    election.state = 'active';
+    election.round += 1;
+    const result = await hsetp(KEY, electionId, JSON.stringify(election));
+    res.send(JSON.stringify({ result }));
 });
 
 router.post('/:electionId/delete', (req, res, next) => {

@@ -18,9 +18,14 @@ router.get('/:userId', async (req, res, next) => {
     const responseJson = { isAdmin: true, username: "admin" };
     res.send(JSON.stringify(responseJson));
   } else {
-    const raw = JSON.parse(await hgetp(KEY, userId));
-    const responseJson = { isAdmin: false, username: raw.netId }
-    res.send(JSON.stringify(responseJson));
+    const resp = await hgetp(KEY, userId);
+    if (resp !== null) {
+      const raw = JSON.parse(await hgetp(KEY, userId));
+      const responseJson = { isAdmin: false, username: raw.netId }
+      res.send(JSON.stringify(responseJson));
+    } else {
+      res.send(JSON.stringify({ isAdmin: false, username: undefined }));
+    }
   }
 });
 
@@ -62,23 +67,7 @@ router.post('/email', async (req, res) => {
     }
   });
   console.log(tuples);
-
   res.send("{}");
-
-  // const profiles = ids.map((netId) => {
-  //   return {
-  //     netId,
-  //     email: `${netId}@princeton.edu`,
-  //     id: uuid()
-  //   }
-  // });
-  // console.log(profiles);
-
-  // const promises = await Promise.all(profiles.map((value) => {
-  //   return hsetp(KEY, value.id, JSON.stringify(value));
-  // }));
-  // const added = promises.reduce((p, c) => p + c);
-  // res.send(JSON.stringify({ added }));
 });
 
 
