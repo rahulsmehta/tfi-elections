@@ -64,7 +64,7 @@ export class Vote extends React.Component<Vote.Props, Vote.State> {
 
   public async loadUser() {
       const routeParams = (this.props.match.params as unknown) as IRouteParams;
-      const resp = await fetch(`http://localhost:3001/api/users/${routeParams.userToken}`).then((response) => response.json()) as IAdminResponse;
+      const resp = await fetch(`${API_BASE}/users/${routeParams.userToken}`).then((response) => response.json()) as IAdminResponse;
       this.setState({ username: resp.username, isUserLoaded: true });
   }
 
