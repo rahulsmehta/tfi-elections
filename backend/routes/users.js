@@ -15,24 +15,13 @@ const hgetallp = promisify(client.hgetall).bind(client);
 
 const KEY = "USERS"
 
-// console.log(process.env.SENDGRID_API_KEY);
-// const msg = {
-//   to: 'mehta.rahul95@gmail.com',
-//   from: 'test@example.com',
-//   subject: 'Sending with SendGrid is Fun',
-//   text: 'and easy to do anywhere, even with Node.js',
-//   html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-// };
-// sgMail.send(msg).catch((msg) => console.error(msg));
-
 function buildEmail(to, link) {
   const html = `Please visit <a href="${link}">${link}</a> to vote.`
   const msg = {
     to,
-    //to: 'amd314@gmail.com',
     from: 'adalman@princeton.edu',
-    subject: 'TFI 2019 Elections Link',
-    text: "Welcome to TI Elections 2019.",
+    subject: 'TFI 2020 Elections Link',
+    text: "Welcome to TI Elections 2020.",
     html
   };
   return msg;

@@ -106,11 +106,6 @@ router.get('/:electionId', (req, res, next) => {
 });
 
 router.post('/:electionId/start-round', async (req,res) => {
-    // const { adminToken } = req.body;
-    // if (process.env.ADMIN_KEY !== adminToken) {
-    //     res.sendStatus(403);
-    //     return;
-    // }
     const electionId = req.param('electionId', null);
     const election = JSON.parse(await hgetp(KEY, electionId));
     election.state = 'active';

@@ -19,26 +19,4 @@ router.post('/:electionId/:round', async (req, res) => {
     res.send(JSON.stringify({ result }));
 });
 
-// router.post('/add', async (req, res) => {
-//   const { ids, adminToken } = req.body;
-//   if (process.env.ADMIN_KEY !== adminToken) {
-//       res.sendStatus(403);
-//       return;
-//   }
-//   const profiles = ids.map((netId) => {
-//     return {
-//       netId,
-//       email: `${netId}@princeton.edu`,
-//       id: uuid()
-//     }
-//   });
-//   console.log(profiles);
-
-//   const promises = await Promise.all(profiles.map((value) => {
-//     return hsetp(KEY, value.id, JSON.stringify(value));
-//   }));
-//   const added = promises.reduce((p, c) => p + c);
-//   res.send(JSON.stringify({ added }));
-// });
-
 module.exports = router;
