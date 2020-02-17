@@ -28,8 +28,8 @@ const KEY = "USERS"
 function buildEmail(to, link) {
   const html = `Please visit <a href="${link}">${link}</a> to vote.`
   const msg = {
-    //to,
-    to: 'amd314@gmail.com',
+    to,
+    //to: 'amd314@gmail.com',
     from: 'adalman@princeton.edu',
     subject: 'TFI 2019 Elections Link',
     text: "Welcome to TI Elections 2019.",
@@ -64,7 +64,7 @@ router.post('/add', async (req, res) => {
   const profiles = ids.map((netId) => {
     return {
       netId,
-      email: `${netId}@princeton.edu`,
+      email: `${netId}`,
       id: uuid()
     }
   });
