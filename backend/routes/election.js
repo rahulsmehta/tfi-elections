@@ -31,6 +31,7 @@ const stopRoundAsync = async (req, res) => {
 
     const votePct = {}
     Object.keys(voteMap).forEach((candidate) => {
+        console.log("Candidate: " + candidate + " votes: " + voteMap[candidate]);
         votePct[candidate] = voteMap[candidate]/nVotes;
     });
 
