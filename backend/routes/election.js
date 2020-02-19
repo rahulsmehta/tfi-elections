@@ -26,16 +26,20 @@ const stopRoundAsync = async (req, res) => {
 
     // process voteMap to determine next round - all candidates < 10% are dropped,
     // and if all have >= 10%, then candidate with fewest votes is dropped
-    const nVotes = votes.length;
+    const nVotes = votes.length; // total # of people voting
     const voteMap = votes.reduce( (acc, o) => (acc[o] = (acc[o] || 0)+1, acc), {} );
 
     const votePct = {}
     Object.keys(voteMap).forEach((candidate) => {
         votePct[candidate] = voteMap[candidate]/nVotes;
     });
+
+    // remove candidates with less than 10% of votes
     let remainingCandidates = Object.keys(voteMap).filter((candidate) => {
         return votePct[candidate] >= 0.1;
     });
+
+    // if no one was removed, remove candidate with least votes
     if (remainingCandidates.length == currentCandidates.length) {
         const sortedCandidates = Object.keys(voteMap).sort((a, b) => {
             return voteMap[b] - voteMap[a];
@@ -43,7 +47,10 @@ const stopRoundAsync = async (req, res) => {
         remainingCandidates = sortedCandidates.slice(0, sortedCandidates.length-1);
     }
 
+    // update # of candidates in state
     election.currentCandidates = remainingCandidates;
+
+    // mark completed if only one candidate remains
     if (remainingCandidates.length == 1) {
         election.state = 'completed';
     } else {
