@@ -19,9 +19,9 @@ function buildEmail(to, link) {
   const html = `Please visit <a href="${link}">${link}</a> to vote.`
   const msg = {
     to,
-    from: 'adalman@princeton.edu',
-    subject: 'TFI 2020 Elections Link',
-    text: "Welcome to TI Elections 2020.",
+    from: 'lucassm@princeton.edu',
+    subject: 'TFI 2021 Elections Link',
+    text: "Welcome to TI Elections 2021.",
     html
   };
   return msg;

@@ -182,7 +182,7 @@ export class Vote extends React.Component<Vote.Props, Vote.State> {
         <Navbar>
           <Navbar.Group align={Alignment.LEFT}>
             <img className={style.icon} src={TI_LOGO} />
-            <Navbar.Heading>TFI Elections 2020</Navbar.Heading>
+            <Navbar.Heading>TFI Elections 2021</Navbar.Heading>
             <Navbar.Divider />
             { breadcrumbs }
           </Navbar.Group>
